@@ -1,4 +1,3 @@
-const { commentData } = require("../db/data/test-data/index.js");
 const { fetchArticle, fetchArticles } = require("../models/article.models.js");
 const { fetchComments } = require("../models/comments.models.js");
 
@@ -13,7 +12,7 @@ exports.getArticle = (req,res,next) =>{
 exports.getArticles = (req, res, next) =>{
     
     fetchArticles().then((articles)=>{
-    const commentPromises= articles.map((article)=>{
+    const commentPromises = articles.map((article)=>{
         return fetchComments(article.article_id).then((comments)=>{
              return {
                 ...article,
@@ -25,4 +24,17 @@ exports.getArticles = (req, res, next) =>{
     })
    
     }).catch(next)
+}
+
+exports.getCommentsByArticleId = (req,res,next) =>{
+    const {article_id} = req.params
+    fetchArticle(article_id).then(()=>{
+        
+       return fetchComments(article_id).then((comments)=>{
+            //console.log(comments)
+            res.status(200).send({comments})
+        })
+    }).catch(next)
+   
+
 }

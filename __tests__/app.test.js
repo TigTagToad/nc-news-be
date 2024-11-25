@@ -95,7 +95,6 @@ describe("GET /api/articles", ()=>{
       .get("/api/articles")
       .then((response)=>{
         expect(response.body.articles.length).toBe(13)
-
       response.body.articles.forEach((article)=>{
         expect(article).toMatchObject({
           author: expect.any(String),
@@ -109,6 +108,52 @@ describe("GET /api/articles", ()=>{
            })
       })
 
+      })
+    })
+  })
+
+  describe("GET /api/articles/:article_id/comments", ()=>{
+    test("200: responds with an array of comments with correct properties in each object", ()=>{
+      return request(app)
+      .get("/api/articles/1/comments")
+      .expect(200)
+      .then(({body})=>{
+
+        const {comments} = body
+        expect(comments.length).toBe(11)
+        comments.forEach((comment)=>{
+          expect(comment).toMatchObject({
+            comment_id: expect.any(Number),
+            votes: expect.any(Number),
+            created_at:expect.any(String),
+            author:expect.any(String),
+            body:expect.any(String),
+            article_id:expect.any(Number),
+          })
+        })
+      })
+
+    }),
+    test("comments ordered by date", ()=>{
+      return request(app)
+      .get("/api/articles/1/comments")
+      .expect(200)
+      .then(({body})=>{
+
+        const {comments} = body
+        expect(comments).toBeSortedBy('created_at',{
+          descending: true
+      })
+      })
+    }),
+    test("404: NOT FOUND if article id doesnt exist",()=>{
+      return request(app)
+      .get("/api/articles/44/comments")
+      .expect(404)
+      .then(({body})=>{
+
+        const {msg} = body
+        expect(msg).toBe("not an id number")
       })
     })
   })
