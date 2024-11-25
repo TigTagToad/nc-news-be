@@ -15,8 +15,26 @@ exports.fetchArticle = (article_id) => {
 exports.fetchArticles = (sort_by = "created_at", order = "desc") =>{
     const validSortBy = ["title", "topic", "author", "created_at", "votes", "article_img_url"];
 
-    let sqlQuery = `SELECT author, title, article_id, topic, created_at, votes, article_img_url
-                   FROM Articles `;
+    let sqlQuery = `
+    SELECT 
+        articles.author,
+        articles.title,
+        articles.article_id,
+        articles.topic,
+        articles.created_at,
+        articles.votes,
+        articles.article_img_url,
+        COUNT(comments.comment_id) AS comment_count
+    FROM Articles
+    LEFT JOIN comments ON comments.article_id = articles.article_id
+    GROUP BY 
+        articles.author,
+        articles.title,
+        articles.article_id,
+        articles.topic,
+        articles.created_at,
+        articles.votes,
+        articles.article_img_url `;
     const queryValues = [];
 
     if (!validSortBy.includes(sort_by)) {

@@ -12,17 +12,19 @@ exports.getArticle = (req,res,next) =>{
 exports.getArticles = (req, res, next) =>{
     
     fetchArticles().then((articles)=>{
-    const commentPromises = articles.map((article)=>{
-        return fetchComments(article.article_id).then((comments)=>{
-             return {
-                ...article,
-                comment_count:  comments.length}
-        })
-    })
-    Promise.all(commentPromises).then((articlesWithComments) => {
-        res.status(200).send({articles: articlesWithComments})
-    })
-   
+    //dont use promises alas
+    // const commentPromises = articles.map((article)=>{
+    //     return fetchComments(article.article_id).then((comments)=>{
+    //          return {
+    //             ...article,
+    //             comment_count:  comments.length}
+    //     })
+    // })
+    // Promise.all(commentPromises).then((articlesWithComments) => {
+    //     res.status(200).send({articles: articlesWithComments})
+    // })
+
+    res.status(200).send({articles})
     }).catch(next)
 }
 

@@ -17,3 +17,4 @@ exports.fetchComments = (article_id, sort_by = "created_at", order = "DESC") =>{
         return rows
     })
 }
+
