@@ -1,16 +1,19 @@
 const express = require("express");
 const app = express();
-const {getEndpoints} = require("./controllers/endpointsController")
-const {getArticle} = require("./controllers/articleController")
-const {getTopics} =  require("./controllers/topicsController")
+const {getEndpoints} = require("./controllers/endpoints.controllers")
+const {getArticles} = require("./controllers/article.controllers")
+const {getArticle} = require("./controllers/article.controllers")
+const {getTopics} =  require("./controllers/topics.controllers.js")
 const {postgresErrorHandler, customErrorHandler, serverErrorHandler} = require("./error-handling/errors")
 
 app.use(express.json());
 
 app.get("/api", getEndpoints);
+app.get("/api/articles", getArticles)
 app.get("/api/articles/:article_id", getArticle);
 
 app.get("/api/topics", getTopics)
+
 
 
 
