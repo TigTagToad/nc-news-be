@@ -1,9 +1,9 @@
-const { fetchTopics } = require("../models/topicsModel") 
+const { fetchTopics } = require("../models/topics.models") 
 
 exports.getTopics = (req,res,next) => {
-console.log("in controller")
+//console.log("in controller")
 fetchTopics().then((rows)=>{
-    console.log(rows)
+    //console.log(rows)
     res.status(200).send({topics: rows})
 
 }).catch(next)

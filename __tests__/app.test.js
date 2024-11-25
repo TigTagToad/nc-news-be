@@ -32,7 +32,7 @@ describe("GET /api/articles/:article_id", ()=>{
     .get("/api/articles/1")
     .expect(200)
     .then((response)=>{
-      expect(response.body).toMatchObject({
+      expect(response.body.article).toMatchObject({
         article_id: 1,
         title: "Living in the shadow of a great man",
         topic: "mitch",
@@ -50,10 +50,10 @@ describe("GET /api/articles/:article_id", ()=>{
   test("400: Responds with bad request when not valid id is used", ()=>{
     return request(app)
     .get("/api/articles/44")
-    .expect(400)
+    .expect(404)
     .then(({body})=>{
       const {msg} = body;
-      expect(msg).toBe("bad request")
+      expect(msg).toBe("not an id number")
     })
   })
 
@@ -75,4 +75,40 @@ describe("GET /api/topics", ()=>{
 
       })
   })
-})
+});
+
+describe("GET /api/articles", ()=>{
+
+  test("200: array is in descending order by created at", ()=>{
+    return request(app)
+    .get("/api/articles")
+    .expect(200)
+    .then((response)=>{
+        //console.log(response.body.articles)
+        expect(response.body.articles).toBeSortedBy('created_at',{
+            descending: true
+        })
+      })
+    }),
+    test("200: responds with an array of articles with correct properties in each object", ()=>{
+      return request(app)
+      .get("/api/articles")
+      .then((response)=>{
+        expect(response.body.articles.length).toBe(13)
+
+      response.body.articles.forEach((article)=>{
+        expect(article).toMatchObject({
+          author: expect.any(String),
+          title: expect.any(String),
+          article_id: expect.any(Number),
+          topic: expect.any(String),
+          created_at: expect.any(String),
+          votes: expect.any(Number),
+          article_img_url: expect.any(String),
+          comment_count: expect.any(Number)
+           })
+      })
+
+      })
+    })
+  })
