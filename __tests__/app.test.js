@@ -58,3 +58,21 @@ describe("GET /api/articles/:article_id", ()=>{
   })
 
 });
+
+describe("GET /api/topics", ()=>{
+  test("200: responds with an array topic of objects each containing the properties: slug and description", ()=>{
+    return request(app)
+      .get("/api/topics")
+      .expect(200)
+      .then((response)=>{
+        response.body.topics.forEach((topic) => {
+          expect(topic).toMatchObject({
+            description: expect.any(String),
+            slug: expect.any(String)
+          })
+          
+        });
+
+      })
+  })
+})
