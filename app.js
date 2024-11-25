@@ -10,8 +10,6 @@ app.use(express.json());
 app.get("/api", getEndpoints);
 app.get("/api/articles/:article_id", getArticle);
 
-
-app.get("/api", getEndpoints)
 app.get("/api/topics", getTopics)
 
 
