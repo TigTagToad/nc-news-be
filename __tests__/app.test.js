@@ -346,6 +346,14 @@ describe("GET /api/articles", ()=>{
         .then(({body : {msg}})=>{
           expect(msg).toBe('bad request')
         })
+      }),
+      test("200: returns array when just order is inputed", ()=>{
+        return request(app)
+        .get("/api/articles?order=asc")
+        .expect(200)
+        .then(({body : {articles}})=>{
+          expect(articles).toBeSortedBy('created_at')
+        })
       })
     })
  
