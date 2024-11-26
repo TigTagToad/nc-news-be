@@ -5,6 +5,7 @@ const app = require("../app");
 const db = require("../db/connection");
 const seed = require("../db/seeds/seed");
 const data = require("../db/data/test-data");
+const articles = require("../db/data/test-data/articles");
 /* Set up your beforeEach & afterAll functions here */
 afterAll(() => {
   console.log("all test have run");
@@ -356,4 +357,33 @@ describe("GET /api/articles", ()=>{
         })
       })
     })
- 
+
+    describe("GET /api/articles (topic query)",()=>{
+      test("200: successfully returns filterd array by topic",()=>{
+        return request(app)
+        .get("/api/articles?topic=mitch")
+        .expect(200)
+        .then(({body: {articles}})=>{
+          articles.forEach((article)=>{
+            expect(article).toMatchObject({
+              author: expect.any(String),
+              title: expect.any(String),
+              article_id: expect.any(Number),
+              topic: "mitch",
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+              article_img_url: expect.any(String),
+              comment_count: expect.any(String)
+            })
+          })
+        })
+      }),
+      test("404: topic not found", ()=>{
+        return request(app)
+        .get("/api/articles?topic=banana")
+        .expect(404)
+        .then(({body:{msg}})=>{
+          expect(msg).toBe("not found")
+        })
+      })
+    })
