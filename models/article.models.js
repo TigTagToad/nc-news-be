@@ -12,6 +12,16 @@ exports.fetchArticle = (article_id) => {
       });
 };
 
+exports.checkArticleExists = (article_id)=>{
+    let sqlQuery = "SELECT * FROM articles WHERE article_id = $1";
+    const queryValues = [article_id];
+    return db.query(sqlQuery, queryValues).then(({ rows }) => {
+        if(!rows.length){
+            return Promise.reject({status: 404, msg: "not an id number"})
+        }
+      });
+}
+
 exports.fetchArticles = (sort_by = "created_at", order = "desc") =>{
     const validSortBy = ["title", "topic", "author", "created_at", "votes", "article_img_url"];
 

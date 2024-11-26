@@ -1,5 +1,5 @@
-const { fetchArticle, fetchArticles } = require("../models/article.models.js");
-const { fetchComments } = require("../models/comments.models.js");
+const { fetchArticle, fetchArticles, checkArticleExists } = require("../models/article.models.js");
+const { fetchComments, addComment} = require("../models/comments.models.js");
 
 exports.getArticle = (req,res,next) =>{
     const {article_id} = req.params
@@ -39,4 +39,17 @@ exports.getCommentsByArticleId = (req,res,next) =>{
     }).catch(next)
    
 
+}
+
+exports.postComment = (req,res,next) =>{
+    const {article_id} = req.params
+    const postedComment = req.body
+    const created_at = new Date ();
+    const comment = {article_id, created_at,votes: 0,...postedComment}
+    const promises = [checkArticleExists(article_id),addComment(comment)]
+
+    Promise.all(promises).then((comment)=>{
+        
+        res.status(201).send({comment: comment[1]})
+    }).catch(next)
 }

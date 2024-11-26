@@ -18,3 +18,16 @@ exports.fetchComments = (article_id, sort_by = "created_at", order = "DESC") =>{
     })
 }
 
+exports.addComment = (comment) =>{
+    const {body, author, votes, article_id, created_at} = comment
+    return db.query(`
+        INSERT INTO comments 
+        (body, author, votes, article_id,created_at) 
+        VALUES ($1,$2,$3,$4,$5) RETURNING * ;
+        `, [body, author, votes, article_id, created_at]).then(({rows})=>{
+            //console.log(rows)
+            return rows[0];
+        })
+
+
+}
