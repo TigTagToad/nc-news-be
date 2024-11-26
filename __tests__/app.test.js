@@ -123,6 +123,7 @@ describe("GET /api/articles", ()=>{
         const {comments} = body
         expect(comments.length).toBe(11)
         comments.forEach((comment)=>{
+          //console.log(comment)
           expect(comment).toMatchObject({
             comment_id: expect.any(Number),
             votes: expect.any(Number),
@@ -155,6 +156,50 @@ describe("GET /api/articles", ()=>{
 
         const {msg} = body
         expect(msg).toBe("not an id number")
+      })
+    }),
+    test("200: empty array if article id has no comments", ()=>{
+      return request(app)
+      .get("/api/articles/2/comments")
+      .expect(200)
+      .then(({body})=>{
+
+        const {comments} = body
+        expect(comments).toEqual([])
+       
+      })
+    })
+  });
+
+  describe("POST /api/articles/:article_id/comments", ()=>{
+    test("201: comment successfully posted", ()=>{
+      const newComment = {body: "new comment", author: "lurker"}
+      return request(app)
+      .post("/api/articles/1/comments")
+      .send(newComment)
+      .expect(201)
+      .then(({body: {comment}})=>{
+        expect(comment).toEqual(
+          expect.objectContaining({
+             body: "new comment",
+             author: "lurker",
+             votes: 0,
+             article_id: 1,
+             created_at: expect.any(String)
+          })
+      )
+
+      })
+    }),
+    test("404: doesnt post comment when article id not valid", ()=>{
+      const newComment = {body: "new comment", author: "lurker"}
+      return request(app)
+      .post("/api/articles/44/comments")
+      .send(newComment)
+      .expect(404)
+      .then(({body: {msg}})=>{
+        expect(msg).toBe("not an id number")
+
       })
     })
   })
