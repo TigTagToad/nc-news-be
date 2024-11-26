@@ -265,6 +265,16 @@ describe("GET /api/articles", ()=>{
       .then(({body: {msg}})=>{
           expect(msg).toBe("bad request")
       })
+    }),
+    test("400: doesnt update when invalid body", ()=>{
+      const patchReq = { inc_votes: "banana"}
+      return request(app)
+      .patch("/api/articles/1")
+      .send(patchReq)
+      .expect(400)
+      .then(({body: {msg}})=>{
+          expect(msg).toBe("bad request")
+      })
     })
   });
 
@@ -364,6 +374,7 @@ describe("GET /api/articles", ()=>{
         .get("/api/articles?topic=mitch")
         .expect(200)
         .then(({body: {articles}})=>{
+          expect(articles.length).toBe(12)
           articles.forEach((article)=>{
             expect(article).toMatchObject({
               author: expect.any(String),
@@ -384,6 +395,14 @@ describe("GET /api/articles", ()=>{
         .expect(404)
         .then(({body:{msg}})=>{
           expect(msg).toBe("not found")
+        })
+      }),
+      test("200: succesfully returns empty array when valid topic is queried but not used in articles",()=>{
+        return request(app)
+        .get("/api/articles?topic=paper")
+        .expect(200)
+        .then(({body:{articles}})=>{
+          expect(articles).toEqual([])
         })
       })
     })

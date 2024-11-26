@@ -71,9 +71,7 @@ exports.fetchArticles = (sort_by = "created_at", order = "desc", topic) =>{
         }
 
     return db.query(sqlQuery, queryValues).then(({ rows }) => {
-        if(rows.length === 0 ){
-            return Promise.reject({status: 400, msg: "bad request"})
-        }
+
         return rows;
       });
 }
@@ -102,6 +100,7 @@ exports.doesTopicExist = (topic) =>{
     const queryValues = [topic];
  
     return db.query(sqlQuery, queryValues).then(({ rows }) => {
+        
         if(!rows.length){
             return Promise.reject({status: 404, msg: "not found"})
         }
