@@ -191,7 +191,7 @@ describe("GET /api/articles", ()=>{
 
       })
     }),
-    test("404: doesnt post comment when article id not valid", ()=>{
+    test("404: doesnt post comment when article id non existant", ()=>{
       const newComment = {body: "new comment", author: "lurker"}
       return request(app)
       .post("/api/articles/44/comments")
@@ -202,6 +202,9 @@ describe("GET /api/articles", ()=>{
 
       })
     })
+    //ADD TESTING FOR INVALID ID EG. STRING
+    //ADD TESTING FOR MISSING FEILDS
+    //ADD TESTING FOR USERNAME THAT DOESNT EXIST
   })
 
   describe("PATCH /api/articles/:article_id", ()=>{
@@ -215,7 +218,7 @@ describe("GET /api/articles", ()=>{
           expect(article.votes).toBe(101)
       })
     }),
-    test("404: doesnt update article when invalid article id", ()=>{
+    test("404: doesnt update article when non existant article id", ()=>{
       const patchReq = { inc_votes: 1 }
       return request(app)
       .patch("/api/articles/44")
@@ -269,3 +272,25 @@ describe("GET /api/articles", ()=>{
     })
 })
   })
+
+  describe("GET /api/users", ()=>{
+    test("200: successfully returns users", ()=>{
+
+      return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then(({body: {users}})=>{
+        expect(users.length).toBe(4)
+        users.forEach((user)=>{
+        expect(user).toMatchObject({
+          username: expect.any(String),
+          name: expect.any(String),
+          avatar_url: expect.any(String)
+           })
+      })
+  
+      })
+    })
+
+    })
+ 
