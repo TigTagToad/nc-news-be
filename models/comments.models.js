@@ -31,3 +31,37 @@ exports.addComment = (comment) =>{
 
 
 }
+
+exports.removeComment = (comment_id) =>{
+
+    return db.query(`
+        DELETE FROM comments
+        WHERE comment_id = $1
+        RETURNING * ;
+        `,[comment_id]).then(({rows})=>{
+            //console.log("im in the model")
+            //console.log(rows)
+            if(rows.length===0){
+                return Promise.reject({status: 404, msg: "not found"})
+            }
+
+        })
+}
+
+exports.checkCommentExists = (comment_id) => {
+    let sqlQuery = `
+    SELECT * FROM comments 
+    WHERE comment_id = $1 `;
+    const queryValues = [comment_id];
+    
+    if(!Number(comment_id)){
+        console.log("rejected comment id")
+        return Promise.reject({status: 400, msg: "bad request"})
+    }
+    return db.query(sqlQuery, queryValues).then(({ rows }) => {
+        console.log(rows, "<--in model")
+        if(!rows.length){
+            return Promise.reject({status: 404, msg: "not an id number"})
+        }
+      });
+}

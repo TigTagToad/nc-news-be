@@ -9,6 +9,7 @@ const {
     patchArticle
     } = require("./controllers/article.controllers")
 const {getTopics} =  require("./controllers/topics.controllers.js")
+const {deleteComment} = require("./controllers/comment.controllers.js")
 const {postgresErrorHandler, customErrorHandler, serverErrorHandler} = require("./error-handling/errors")
 
 app.use(express.json());
@@ -23,7 +24,7 @@ app.get("/api/topics", getTopics);
 app.patch("/api/articles/:article_id", patchArticle);
 app.post("/api/articles/:article_id/comments", postComment);
 
-
+app.delete("/api/comments/:comment_id", deleteComment);
 
 
 app.use(postgresErrorHandler);

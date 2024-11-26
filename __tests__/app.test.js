@@ -236,3 +236,36 @@ describe("GET /api/articles", ()=>{
       })
     })
   })
+
+  describe("DELETE /api/comments/:comment_id", ()=>{
+    test("200: succesfully deletes comment by id", ()=>{
+
+      return request(app)
+      .delete("/api/comments/1")
+      .expect(204)
+      .then((response)=>{
+          //console.log(response.body)
+          expect(response.body).toEqual({})
+      })
+  }),
+  test("404: doest delete when invalid id", ()=>{
+      return request(app)
+      .delete("/api/comments/44")
+      .expect(404)
+      .then((body)=>{
+         //console.log(body.body)
+          expect(body.body.msg).toBe("not found")
+          
+      })
+  }),
+  test("400: doest delete when invalid id", ()=>{
+    return request(app)
+    .delete("/api/comments/banana")
+    .expect(400)
+    .then((body)=>{
+        
+        expect(body.body.msg).toBe("bad request")
+        
+    })
+})
+  })
