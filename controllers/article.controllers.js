@@ -10,8 +10,9 @@ exports.getArticle = (req,res,next) =>{
 };
 
 exports.getArticles = (req, res, next) =>{
+    const {sort_by, order} = req.query
     
-    fetchArticles().then((articles)=>{
+    fetchArticles(sort_by, order).then((articles)=>{
     //dont use promises alas
     // const commentPromises = articles.map((article)=>{
     //     return fetchComments(article.article_id).then((comments)=>{
