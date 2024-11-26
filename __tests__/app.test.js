@@ -201,11 +201,41 @@ describe("GET /api/articles", ()=>{
         expect(msg).toBe("not an id number")
 
       })
+    }),
+    test("400: doesnt post comment when invalid article id", ()=>{
+      const newComment = {body: "new comment", author: "lurker"}
+      return request(app)
+      .post("/api/articles/banana/comments")
+      .send(newComment)
+      .expect(400)
+      .then(({body: {msg}})=>{
+        expect(msg).toBe("bad request")
+
     })
-    //ADD TESTING FOR INVALID ID EG. STRING
-    //ADD TESTING FOR MISSING FEILDS
+ 
+
     //ADD TESTING FOR USERNAME THAT DOESNT EXIST
+  }),
+  test("400: does post when comment has missing fields", ()=>{
+    const newComment = {body: "new comment"}
+    return request(app)
+    .post("/api/articles/1/comments")
+    .send(newComment)
+    .expect(400)
+    .then(({body: {msg}})=>{
+      expect(msg).toBe("bad request")
+  })}),
+  test("400: doesnt post comment when username doesnt exist",()=>{
+    const newComment = {body: "new comment", username: "taiga"}
+    return request(app)
+    .post("/api/articles/1/comments")
+    .send(newComment)
+    .expect(400)
+    .then(({body: {msg}})=>{
+      expect(msg).toBe("bad request")
   })
+  })
+})
 
   describe("PATCH /api/articles/:article_id", ()=>{
     test("200: succesfully patches article via article id", ()=>{
