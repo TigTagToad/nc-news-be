@@ -212,9 +212,6 @@ describe("GET /api/articles", ()=>{
         expect(msg).toBe("bad request")
 
     })
- 
-
-    //ADD TESTING FOR USERNAME THAT DOESNT EXIST
   }),
   test("400: does post when comment has missing fields", ()=>{
     const newComment = {body: "new comment"}
@@ -235,7 +232,7 @@ describe("GET /api/articles", ()=>{
       expect(msg).toBe("bad request")
   })
   })
-})
+});
 
   describe("PATCH /api/articles/:article_id", ()=>{
     test("200: succesfully patches article via article id", ()=>{
@@ -268,7 +265,7 @@ describe("GET /api/articles", ()=>{
           expect(msg).toBe("bad request")
       })
     })
-  })
+  });
 
   describe("DELETE /api/comments/:comment_id", ()=>{
     test("200: succesfully deletes comment by id", ()=>{
@@ -301,7 +298,7 @@ describe("GET /api/articles", ()=>{
         
     })
 })
-  })
+  });
 
   describe("GET /api/users", ()=>{
     test("200: successfully returns users", ()=>{
@@ -322,5 +319,33 @@ describe("GET /api/articles", ()=>{
       })
     })
 
+    });
+
+    describe("GET /api/articles sortting queries",()=>
+    {
+      test("200: succesfully returns sorted array of articles by any valid column", ()=>{
+        return request(app)
+        .get("/api/articles?sort_by=title&order=asc")
+        .expect(200)
+        .then(({body : {articles}})=>{
+          expect(articles).toBeSortedBy('title')
+        })
+      }),
+      test("400: doesnt retun an array when invalid sortby", ()=>{
+        return request(app)
+        .get("/api/articles?sort_by=banana&order=asc")
+        .expect(400)
+        .then(({body : {msg}})=>{
+          expect(msg).toBe('bad request')
+        })
+      }),
+      test("400: doesnt retun an array when invalid order", ()=>{
+        return request(app)
+        .get("/api/articles?sort_by=created_by&order=banana")
+        .expect(400)
+        .then(({body : {msg}})=>{
+          expect(msg).toBe('bad request')
+        })
+      })
     })
  

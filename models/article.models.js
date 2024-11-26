@@ -27,7 +27,7 @@ exports.checkArticleExists = (article_id)=>{
 
 exports.fetchArticles = (sort_by = "created_at", order = "desc") =>{
     const validSortBy = ["title", "topic", "author", "created_at", "votes", "article_img_url"];
-
+    const validOrder = ["ASC", "DESC"]
     let sqlQuery = `
     SELECT 
         articles.author,
@@ -51,6 +51,9 @@ exports.fetchArticles = (sort_by = "created_at", order = "desc") =>{
     const queryValues = [];
 
     if (!validSortBy.includes(sort_by)) {
+        return Promise.reject({status: 400, msg: "bad request"})
+    }
+    if (!validOrder.includes(order.toUpperCase())) {
         return Promise.reject({status: 400, msg: "bad request"})
     }
     if(sort_by){
