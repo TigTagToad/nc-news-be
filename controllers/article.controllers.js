@@ -1,4 +1,4 @@
-const { fetchArticle, fetchArticles, checkArticleExists, updateVotes} = require("../models/article.models.js");
+const { fetchArticle, fetchArticles, checkArticleExists, updateVotes, doesTopicExist} = require("../models/article.models.js");
 const { fetchComments, addComment} = require("../models/comments.models.js");
 
 exports.getArticle = (req,res,next) =>{
@@ -10,9 +10,12 @@ exports.getArticle = (req,res,next) =>{
 };
 
 exports.getArticles = (req, res, next) =>{
-    const {sort_by, order} = req.query
-    
-    fetchArticles(sort_by, order).then((articles)=>{
+    const {sort_by, order, topic} = req.query
+    let promises = [fetchArticles(sort_by, order, topic)]
+    if(topic){
+        promises.push(doesTopicExist(topic))
+    }
+    Promise.all(promises).then((articles)=>{
     //dont use promises alas
     // const commentPromises = articles.map((article)=>{
     //     return fetchComments(article.article_id).then((comments)=>{
@@ -24,8 +27,8 @@ exports.getArticles = (req, res, next) =>{
     // Promise.all(commentPromises).then((articlesWithComments) => {
     //     res.status(200).send({articles: articlesWithComments})
     // })
-
-    res.status(200).send({articles})
+    //console.log(articles)
+    res.status(200).send({articles: articles[0]})
     }).catch(next)
 }
 
