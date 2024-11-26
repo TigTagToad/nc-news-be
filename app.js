@@ -1,7 +1,13 @@
 const express = require("express");
 const app = express();
 const {getEndpoints} = require("./controllers/endpoints.controllers")
-const {getArticles,getArticle,getCommentsByArticleId,postComment} = require("./controllers/article.controllers")
+const {
+    getArticles,
+    getArticle,
+    getCommentsByArticleId,
+    postComment,
+    patchArticle
+    } = require("./controllers/article.controllers")
 const {getTopics} =  require("./controllers/topics.controllers.js")
 const {postgresErrorHandler, customErrorHandler, serverErrorHandler} = require("./error-handling/errors")
 
@@ -13,8 +19,8 @@ app.get("/api/articles/:article_id", getArticle);
 app.get("/api/articles/:article_id/comments", getCommentsByArticleId);
 
 
-app.get("/api/topics", getTopics)
-
+app.get("/api/topics", getTopics);
+app.patch("/api/articles/:article_id", patchArticle);
 app.post("/api/articles/:article_id/comments", postComment);
 
 

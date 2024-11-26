@@ -203,3 +203,36 @@ describe("GET /api/articles", ()=>{
       })
     })
   })
+
+  describe("PATCH /api/articles/:article_id", ()=>{
+    test("200: succesfully patches article via article id", ()=>{
+      const patchReq = { inc_votes: 1 }
+      return request(app)
+      .patch("/api/articles/1")
+      .send(patchReq)
+      .expect(200)
+      .then(({body: {article}})=>{
+          expect(article.votes).toBe(101)
+      })
+    }),
+    test("404: doesnt update article when invalid article id", ()=>{
+      const patchReq = { inc_votes: 1 }
+      return request(app)
+      .patch("/api/articles/44")
+      .send(patchReq)
+      .expect(404)
+      .then(({body: {msg}})=>{
+          expect(msg).toBe("not an id number")
+      })
+    }),
+    test("400: doesnt update article when invalid article id", ()=>{
+      const patchReq = { inc_votes: 1 }
+      return request(app)
+      .patch("/api/articles/banana")
+      .send(patchReq)
+      .expect(400)
+      .then(({body: {msg}})=>{
+          expect(msg).toBe("bad request")
+      })
+    })
+  })

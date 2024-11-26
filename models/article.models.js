@@ -15,6 +15,9 @@ exports.fetchArticle = (article_id) => {
 exports.checkArticleExists = (article_id)=>{
     let sqlQuery = "SELECT * FROM articles WHERE article_id = $1";
     const queryValues = [article_id];
+    if(!Number(article_id)){
+        return Promise.reject({status: 400, msg: "bad request"})
+    }
     return db.query(sqlQuery, queryValues).then(({ rows }) => {
         if(!rows.length){
             return Promise.reject({status: 404, msg: "not an id number"})
@@ -61,3 +64,20 @@ exports.fetchArticles = (sort_by = "created_at", order = "desc") =>{
       });
 }
 
+exports.updateVotes = (patchReq, article_id) =>{
+    const UpdateValue = patchReq.inc_votes
+
+    
+    return db.query(` 
+        UPDATE articles
+        SET votes = votes + $1
+        WHERE article_id = $2
+        RETURNING * ;
+        `,[UpdateValue, article_id]).then(({rows})=>{
+            if(!rows.length){
+                return Promise.reject({status: 400, msg: "bad request"})
+            }
+            //console.log(rows)
+            return rows[0]
+        })
+}
