@@ -54,12 +54,12 @@ exports.checkCommentExists = (comment_id) => {
     WHERE comment_id = $1 `;
     const queryValues = [comment_id];
     
-    if(!Number(comment_id)){
-        console.log("rejected comment id")
-        return Promise.reject({status: 400, msg: "bad request"})
-    }
+    // if(!Number(comment_id)){
+    //     //console.log("rejected comment id")
+    //     return Promise.reject({status: 400, msg: "bad request"})
+    // }
     return db.query(sqlQuery, queryValues).then(({ rows }) => {
-        console.log(rows, "<--in model")
+        //console.log(rows, "<--in model")
         if(!rows.length){
             return Promise.reject({status: 404, msg: "not an id number"})
         }

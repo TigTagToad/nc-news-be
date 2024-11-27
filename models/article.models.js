@@ -2,7 +2,13 @@ const db = require("../db/connection")
 
 
 exports.fetchArticle = (article_id) => {
-    let sqlQuery = "SELECT * FROM articles WHERE article_id = $1";
+    let sqlQuery = `
+    SELECT articles.*,
+    COUNT(comments.comment_id) AS comment_count
+    FROM articles 
+    LEFT JOIN comments ON comments.article_id = articles.article_id 
+    GROUP BY articles.article_id
+    HAVING articles.article_id = $1`;
     const queryValues = [article_id];
     return db.query(sqlQuery, queryValues).then(({ rows }) => {
         if(rows.length === 0 ){
@@ -15,9 +21,9 @@ exports.fetchArticle = (article_id) => {
 exports.checkArticleExists = (article_id)=>{
     let sqlQuery = "SELECT * FROM articles WHERE article_id = $1";
     const queryValues = [article_id];
-    if(!Number(article_id)){
-        return Promise.reject({status: 400, msg: "bad request"})
-    }
+    // if(!Number(article_id)){
+    //     return Promise.reject({status: 400, msg: "bad request"})
+    // }
     return db.query(sqlQuery, queryValues).then(({ rows }) => {
         if(!rows.length){
             return Promise.reject({status: 404, msg: "not an id number"})
