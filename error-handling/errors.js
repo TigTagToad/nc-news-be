@@ -1,12 +1,8 @@
 
-exports.catchInvalidEndpoints = (err, req, res, next) =>{
-    console.log("helloooo ")
-if(err){
-    res.status(404).send({msg: "not found"})
+exports.catchInvalidEndpoints = (req, res) =>{
+    console.log("honey im an invalid endpoint")
 
-}else{
-    next(err)
-}
+    res.status(404).send({msg: "not found"})
 }
 
 

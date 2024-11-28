@@ -4,14 +4,14 @@ const app = express();
 const {postgresErrorHandler, customErrorHandler, serverErrorHandler, catchInvalidEndpoints} = require("./error-handling/errors")
 
 
-app.all("/*", catchInvalidEndpoints); 
+
 app.use(express.json());
 
 
 
 app.use("/api", apiRouter);
 
-
+app.all("/*", catchInvalidEndpoints); 
 
 app.use(postgresErrorHandler);
 

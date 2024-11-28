@@ -467,15 +467,15 @@ describe("GET /api/users/:username", ()=>{
   })
 })
 
-// describe("Catch all errors", ()=>{
-//   test("404: respond with not found when not existant endpoint is used", ()=>{
-//     return request(app)
-//     .get("/api/toopic")
-//     .expect(404)
-//     .then((res)=>{
-//       console.log(res.body)
-//       expect(msg).toBe("not found")
-//     })
-//   })
-// })
+describe("Catch all errors", ()=>{
+  test("404: respond with not found when not existant endpoint is used", ()=>{
+    return request(app)
+    .get("/api/NotARoute")
+    .expect(404)
+    .then(({body:{msg}})=>{
+    
+      expect(msg).toBe("not found")
+    })
+  })
+})
   
