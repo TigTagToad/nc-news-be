@@ -16,9 +16,9 @@ This project is an API than retreives information/news articles from a database,
 6. Run `npm run seed` to seed the database
 7. Run `npm run start` to run the application
 
+## Endpoints
 
-
-
+Full list of API endpoints available at /api
 
 --- 
 
