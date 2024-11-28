@@ -299,7 +299,7 @@ describe("GET /api/articles", ()=>{
           expect(response.body).toEqual({})
       })
   }),
-  test("404: doest delete when invalid id", ()=>{
+  test("404: doest delete when non existant id", ()=>{
       return request(app)
       .delete("/api/comments/44")
       .expect(404)
@@ -321,8 +321,8 @@ describe("GET /api/articles", ()=>{
 })
   });
 
-  describe("GET /api/users", ()=>{
-    test("200: successfully returns users", ()=>{
+describe("GET /api/users", ()=>{
+  test("200: successfully returns users", ()=>{
 
       return request(app)
       .get("/api/users")
@@ -342,7 +342,7 @@ describe("GET /api/articles", ()=>{
 
     });
 
-    describe("GET /api/articles sortting queries",()=>
+describe("GET /api/articles sortting queries",()=>
     {
       test("200: succesfully returns sorted array of articles by any valid column", ()=>{
         return request(app)
@@ -378,7 +378,7 @@ describe("GET /api/articles", ()=>{
       })
     })
 
-    describe("GET /api/articles (topic query)",()=>{
+describe("GET /api/articles (topic query)",()=>{
       test("200: successfully returns filterd array by topic",()=>{
         return request(app)
         .get("/api/articles?topic=mitch")
@@ -417,7 +417,7 @@ describe("GET /api/articles", ()=>{
       })
     });
 
-    describe("GET /api/articles/:article_id with comment_count", ()=>{
+describe("GET /api/articles/:article_id with comment_count", ()=>{
       //I've not tested for invalid and non existant ids as they are tested above in the original test for get article by article_id
       test("200: Responds with an object with relevent id", ()=>{
         return request(app)
@@ -442,3 +442,28 @@ describe("GET /api/articles", ()=>{
       })
     
     });
+
+describe("GET /api/users/:username", ()=>{
+  test("200: responsed with user object with valid username",()=>{
+    return request(app)
+    .get("/api/users/butter_bridge")
+    .expect(200)
+    .then(({body: {user}})=>{
+      expect(user).toEqual(  {
+        username: 'butter_bridge',
+        name: 'jonny',
+        avatar_url:
+          'https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg'
+      })
+    })
+  }),
+  test("404: respond with not found when non existant username used", ()=>{
+    return request(app)
+    .get("/api/users/banana")
+    .expect(404)
+    .then(({body: {msg}})=>{
+      expect(msg).toBe("not found")
+    })
+  })
+})
+  
