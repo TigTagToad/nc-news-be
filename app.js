@@ -1,10 +1,17 @@
 const express = require("express");
 const apiRouter = require("./routes/api.router.js");
 const app = express();
-const {postgresErrorHandler, customErrorHandler, serverErrorHandler} = require("./error-handling/errors")
+const {postgresErrorHandler, customErrorHandler, serverErrorHandler, catchInvalidEndpoints} = require("./error-handling/errors")
 
+
+app.all("/*", catchInvalidEndpoints); 
 app.use(express.json());
+
+
+
 app.use("/api", apiRouter);
+
+
 
 app.use(postgresErrorHandler);
 

@@ -459,11 +459,23 @@ describe("GET /api/users/:username", ()=>{
   }),
   test("404: respond with not found when non existant username used", ()=>{
     return request(app)
-    .get("/api/users/banana")
+    .get("/api/users/notavalidusername")
     .expect(404)
     .then(({body: {msg}})=>{
       expect(msg).toBe("not found")
     })
   })
 })
+
+// describe("Catch all errors", ()=>{
+//   test("404: respond with not found when not existant endpoint is used", ()=>{
+//     return request(app)
+//     .get("/api/toopic")
+//     .expect(404)
+//     .then((res)=>{
+//       console.log(res.body)
+//       expect(msg).toBe("not found")
+//     })
+//   })
+// })
   
