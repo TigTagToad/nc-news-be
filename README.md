@@ -20,6 +20,10 @@ This project is an API than retreives information/news articles from a database,
 
 Full list of API endpoints available at /api
 
+## Dependencies 
+
+Tested on node v22.9.0 
+
 --- 
 
 This portfolio project was created as part of a Digital Skills Bootcamp in Software Engineering provided by [Northcoders](https://northcoders.com/)
