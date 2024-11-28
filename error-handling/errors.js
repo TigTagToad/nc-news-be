@@ -1,3 +1,16 @@
+
+exports.catchInvalidEndpoints = (err, req, res, next) =>{
+    console.log("helloooo ")
+if(err){
+    res.status(404).send({msg: "not found"})
+
+}else{
+    next(err)
+}
+}
+
+
+
 exports.postgresErrorHandler = (err, req, res, next) => {
     //console.log(err)
     if (err.code === "22P02" || err.code === "23502") {
