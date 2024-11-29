@@ -54,7 +54,7 @@ describe("GET /api/articles/:article_id", ()=>{
     .expect(404)
     .then(({body})=>{
       const {msg} = body;
-      expect(msg).toBe("not an id number")
+      expect(msg).toBe("not found")
     })
   }),
   test("400: responds with bad request when invalid id is used ", ()=>{
@@ -166,7 +166,7 @@ describe("GET /api/articles", ()=>{
       .then(({body})=>{
 
         const {msg} = body
-        expect(msg).toBe("not an id number")
+        expect(msg).toBe("not found")
       })
     }),
     test("200: empty array if article id has no comments", ()=>{
@@ -209,7 +209,7 @@ describe("GET /api/articles", ()=>{
       .send(newComment)
       .expect(404)
       .then(({body: {msg}})=>{
-        expect(msg).toBe("not an id number")
+        expect(msg).toBe("not found")
 
       })
     }),
@@ -263,7 +263,7 @@ describe("GET /api/articles", ()=>{
       .send(patchReq)
       .expect(404)
       .then(({body: {msg}})=>{
-          expect(msg).toBe("not an id number")
+          expect(msg).toBe("not found")
       })
     }),
     test("400: doesnt update article when invalid article id", ()=>{
@@ -479,3 +479,53 @@ describe("Catch all errors", ()=>{
   })
 })
   
+describe("PATCH /api/comments/:comment_id", ()=>{
+  test("200: sucessfully updates comment votes with valid comment id", ()=>{
+    const patchReq = { inc_votes: 1 }
+    return request(app)
+    .patch("/api/comments/1")
+    .send(patchReq)
+    .expect(200)
+    .then(({body: {comment}})=>{
+      expect(comment).toEqual({ 
+        comment_id: 1,
+        body: "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+        votes: 17,
+        author: "butter_bridge",
+        article_id: 9,
+        created_at: "2020-04-06T12:17:00.000Z",
+      })
+    })
+  }),
+  test("404: doesnt update comment when non existant comment_id", ()=>{
+    const patchReq = { inc_votes: 1 }
+    return request(app)
+    .patch("/api/comments/44")
+    .send(patchReq)
+    .expect(404)
+    .then(({body: {msg}})=>{
+        expect(msg).toBe("not found")
+    })
+  }),
+  test("400: doesnt update comment when invalid comment id", ()=>{
+    const patchReq = { inc_votes: 1 }
+    return request(app)
+    .patch("/api/comments/notavalidid")
+    .send(patchReq)
+    .expect(400)
+    .then(({body: {msg}})=>{
+        expect(msg).toBe("bad request")
+    })
+  }),
+  test("400: doesnt update comment when invalid body", ()=>{
+    const patchReq = { inc_votes: "not a valid body"}
+    return request(app)
+    .patch("/api/comments/1")
+    .send(patchReq)
+    .expect(400)
+    .then(({body: {msg}})=>{
+        expect(msg).toBe("bad request")
+    })
+  })
+
+})

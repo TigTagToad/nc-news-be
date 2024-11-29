@@ -1,6 +1,5 @@
 
 exports.catchInvalidEndpoints = (req, res) =>{
-    console.log("honey im an invalid endpoint")
 
     res.status(404).send({msg: "not found"})
 }
