@@ -10,8 +10,8 @@ exports.getArticle = (req,res,next) =>{
 };
 
 exports.getArticles = (req, res, next) =>{
-    const {sort_by, order, topic} = req.query
-    let promises = [fetchArticles(sort_by, order, topic)]
+    const {sort_by, order, topic, limit, p} = req.query
+    let promises = [fetchArticles(sort_by, order, topic, limit, p)]
     if(topic){
         promises.push(doesTopicExist(topic))
     }
@@ -27,7 +27,8 @@ exports.getArticles = (req, res, next) =>{
     // Promise.all(commentPromises).then((articlesWithComments) => {
     //     res.status(200).send({articles: articlesWithComments})
     // })
-    //console.log(articles)
+    // console.log(articles[0].articles
+    // )
     res.status(200).send({articles: articles[0]})
     }).catch(next)
 }

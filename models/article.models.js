@@ -1,3 +1,4 @@
+const { off } = require("../app");
 const db = require("../db/connection")
 
 
@@ -32,7 +33,8 @@ exports.checkArticleExists = (article_id)=>{
       });
 }
 
-exports.fetchArticles = (sort_by = "created_at", order = "desc", topic) =>{
+exports.fetchArticles = (sort_by = "created_at", order = "desc", topic, limit = 10, p) =>{
+    const offset = (p * limit) - limit;
     const validSortBy = ["title", "topic", "author", "created_at", "votes", "article_img_url"];
     const validOrder = ["ASC", "DESC"]
     let sqlQuery = `
@@ -45,6 +47,7 @@ exports.fetchArticles = (sort_by = "created_at", order = "desc", topic) =>{
         articles.votes,
         articles.article_img_url,
         COUNT(comments.comment_id) AS comment_count
+        
     FROM Articles 
     LEFT JOIN comments ON comments.article_id = articles.article_id `;
 
@@ -73,14 +76,33 @@ exports.fetchArticles = (sort_by = "created_at", order = "desc", topic) =>{
         articles.votes,
         articles.article_img_url `
 
+    const countQuery = sqlQuery.replace(
+            `SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, articles.article_img_url, COUNT(comments.comment_id) AS comment_count`,
+            `SELECT COUNT(*) AS total_count`
+        )
+
     if(sort_by){
             sqlQuery += `ORDER BY ${sort_by} ${order} `
         }
+    if(limit){
+        sqlQuery += `LIMIT ${limit} `
+    }
+    if(p){
+        sqlQuery += `OFFSET ${offset}; `
+    }
+    return db.query(countQuery, queryValues).then(({rowCount})=>{
+        const totalCount = rowCount
+        return db.query(sqlQuery, queryValues).then((rows)=>{
+            return {
+                total_count: totalCount,
+                articles: rows.rows
+            }
+        })
+    })
+    // return db.query(sqlQuery, queryValues).then(({ rows }) => {
 
-    return db.query(sqlQuery, queryValues).then(({ rows }) => {
-
-        return rows;
-      });
+    //     return rows;
+    //   });
 }
 
 exports.updateVotes = (patchReq, article_id) =>{

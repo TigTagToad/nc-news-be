@@ -97,7 +97,7 @@ describe("GET /api/articles", ()=>{
     .expect(200)
     .then((response)=>{
         //console.log(response.body.articles)
-        expect(response.body.articles).toBeSortedBy('created_at',{
+        expect(response.body.articles.articles).toBeSortedBy('created_at',{
             descending: true
         })
       })
@@ -106,8 +106,8 @@ describe("GET /api/articles", ()=>{
       return request(app)
       .get("/api/articles")
       .then((response)=>{
-        expect(response.body.articles.length).toBe(13)
-      response.body.articles.forEach((article)=>{
+        expect(response.body.articles.total_count).toBe(13)
+      response.body.articles.articles.forEach((article)=>{
         expect(article).toMatchObject({
           author: expect.any(String),
           title: expect.any(String),
@@ -245,7 +245,7 @@ describe("GET /api/articles", ()=>{
   })
 });
 
-  describe("PATCH /api/articles/:article_id", ()=>{
+describe("PATCH /api/articles/:article_id", ()=>{
     test("200: succesfully patches article via article id", ()=>{
       const patchReq = { inc_votes: 1 }
       return request(app)
@@ -288,7 +288,7 @@ describe("GET /api/articles", ()=>{
     })
   });
 
-  describe("DELETE /api/comments/:comment_id", ()=>{
+describe("DELETE /api/comments/:comment_id", ()=>{
     test("200: succesfully deletes comment by id", ()=>{
 
       return request(app)
@@ -342,14 +342,14 @@ describe("GET /api/users", ()=>{
 
     });
 
-describe("GET /api/articles sortting queries",()=>
+describe("GET /api/articles sorting queries",()=>
     {
       test("200: succesfully returns sorted array of articles by any valid column", ()=>{
         return request(app)
         .get("/api/articles?sort_by=title&order=asc")
         .expect(200)
         .then(({body : {articles}})=>{
-          expect(articles).toBeSortedBy('title')
+          expect(articles.articles).toBeSortedBy('title')
         })
       }),
       test("400: doesnt retun an array when invalid sortby", ()=>{
@@ -373,7 +373,7 @@ describe("GET /api/articles sortting queries",()=>
         .get("/api/articles?order=asc")
         .expect(200)
         .then(({body : {articles}})=>{
-          expect(articles).toBeSortedBy('created_at')
+          expect(articles.articles).toBeSortedBy('created_at')
         })
       })
     })
@@ -384,8 +384,8 @@ describe("GET /api/articles (topic query)",()=>{
         .get("/api/articles?topic=mitch")
         .expect(200)
         .then(({body: {articles}})=>{
-          expect(articles.length).toBe(12)
-          articles.forEach((article)=>{
+          expect(articles.total_count).toBe(12)
+          articles.articles.forEach((article)=>{
             expect(article).toMatchObject({
               author: expect.any(String),
               title: expect.any(String),
@@ -412,10 +412,31 @@ describe("GET /api/articles (topic query)",()=>{
         .get("/api/articles?topic=paper")
         .expect(200)
         .then(({body:{articles}})=>{
-          expect(articles).toEqual([])
+          expect(articles.articles).toEqual([])
         })
       })
     });
+describe("GET /api/articles with pagination",()=>{
+  test("200: succesfully responds with the correct amount of articles", ()=>{
+    return request(app)
+    .get("/api/articles?limit=10&p=1")
+    .expect(200)
+    .then(({body:{articles}})=>{
+      expect(articles.articles.length).toBe(10)
+    
+    })
+  }),
+  test("200: succesfully responds with the correct amount of articles when starting from page 2", ()=>{
+    return request(app)
+    .get("/api/articles?limit=10&p=2")
+    .expect(200)
+    .then(({body:{articles}})=>{
+      expect(articles.articles.length).toBe(3)
+    
+    })
+  })
+
+})
 describe("POST /api/articles", ()=>{
   test("201: successfully posts articles with valid id and body", ()=>{
     const newArticle = {author: "lurker",
