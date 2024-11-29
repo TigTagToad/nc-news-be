@@ -1,4 +1,4 @@
-const { fetchArticle, fetchArticles, checkArticleExists, updateVotes, doesTopicExist} = require("../models/article.models.js");
+const { fetchArticle, fetchArticles, checkArticleExists, updateVotes, doesTopicExist, addArticle} = require("../models/article.models.js");
 const { fetchComments, addComment} = require("../models/comments.models.js");
 
 exports.getArticle = (req,res,next) =>{
@@ -68,4 +68,13 @@ exports.patchArticle = (req,res,next) =>{
     Promise.all(promises).then((updatedArticle)=>{
         res.status(200).send({article: updatedArticle[1]})
     }).catch(next)
+}
+
+exports.postArticle = (req, res, next) =>{
+    const newArticle = req.body
+    addArticle(newArticle).then((article)=>{
+
+        res.status(201).send({article})
+    }).catch(next)
+
 }

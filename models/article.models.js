@@ -113,3 +113,39 @@ exports.doesTopicExist = (topic) =>{
         }
       });
 }
+
+exports.addArticle = (newArticle) =>{
+    const {author, title, body, topic, article_img_url} = newArticle
+
+    return db.query(`
+        WITH new_article AS(
+            INSERT INTO articles
+            (author, title, body, topic, article_img_url) 
+            VALUES ($1,$2,$3,$4,$5) 
+            RETURNING *
+        )
+        SELECT new_article.author,
+        new_article.title,
+        new_article.article_id,
+        new_article.topic,
+        new_article.created_at,
+        new_article.votes,
+        new_article.article_img_url,
+        new_article.body,
+        COUNT(comments.comment_id) AS comment_count
+    FROM new_article 
+    LEFT JOIN comments ON comments.article_id = new_article.article_id 
+        GROUP BY 
+        new_article.author,
+        new_article.title,
+        new_article.article_id,
+        new_article.topic,
+        new_article.created_at,
+        new_article.votes,
+        new_article.article_img_url,
+        new_article.body ;
+        `, [author, title, body, topic, article_img_url]).then(({rows})=>{
+            
+            return rows[0];
+        })
+}

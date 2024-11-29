@@ -416,6 +416,57 @@ describe("GET /api/articles (topic query)",()=>{
         })
       })
     });
+describe("POST /api/articles", ()=>{
+  test("201: successfully posts articles with valid id and body", ()=>{
+    const newArticle = {author: "lurker",
+      title: "Plenty of fish",
+      body: "A lot of facts about fish",
+      topic: "cats",
+      article_img_url: "https://images.app.goo.gl/wyFTxD6AW2mqwgHv6" }
+    return request(app)
+    .post("/api/articles")
+    .send(newArticle)
+    .expect(201).then(({body : {article}})=>{
+      expect(article).toEqual(expect.objectContaining({
+      author: "lurker",
+      title: "Plenty of fish",
+      body: "A lot of facts about fish",
+      topic: "cats",
+      article_img_url: "https://images.app.goo.gl/wyFTxD6AW2mqwgHv6",
+      article_id: 14,
+      created_at: expect.any(String),
+      comment_count:"0",
+      votes:0
+      }))
+
+    })
+  }),
+  test("400: doesnt post article if incomplete/invalid username", ()=>{
+    const newArticle = {author: "not a valid user name",
+      title: "Plenty of fish",
+      body: "A lot of facts about fish",
+      topic: "cats",
+      article_img_url: "https://images.app.goo.gl/wyFTxD6AW2mqwgHv6" }
+    return request(app)
+    .post("/api/articles")
+    .send(newArticle)
+    .expect(400).then(({body: {msg}})=>{
+      expect(msg).toBe("bad request")
+    })
+  }),
+  test("400: doesnt post article if incomplete body",()=>{
+    const newArticle = {author: "lurker",
+      body: "A lot of facts about fish",
+      topic: "cats",
+      article_img_url: "https://images.app.goo.gl/wyFTxD6AW2mqwgHv6" }
+    return request(app)
+    .post("/api/articles")
+    .send(newArticle)
+    .expect(400).then(({body: {msg}})=>{
+      expect(msg).toBe("bad request")
+    })
+  })
+  })
 
 describe("GET /api/articles/:article_id with comment_count", ()=>{
       //I've not tested for invalid and non existant ids as they are tested above in the original test for get article by article_id
@@ -529,3 +580,4 @@ describe("PATCH /api/comments/:comment_id", ()=>{
   })
 
 })
+
