@@ -15,7 +15,7 @@ exports.fetchArticle = (article_id) => {
     const queryValues = [article_id];
     return db.query(sqlQuery, queryValues).then(({ rows }) => {
         if(rows.length === 0 ){
-            return Promise.reject({status: 404, msg: "not an id number"})
+            return Promise.reject({status: 404, msg: "not found"})
         }
         return rows[0];
       });
@@ -27,7 +27,7 @@ exports.checkArticleExists = (article_id)=>{
 
     return db.query(sqlQuery, queryValues).then(({ rows }) => {
         if(!rows.length){
-            return Promise.reject({status: 404, msg: "not an id number"})
+            return Promise.reject({status: 404, msg: "not found"})
         }
       });
 }
@@ -94,7 +94,7 @@ exports.updateVotes = (patchReq, article_id) =>{
         RETURNING * ;
         `,[UpdateValue, article_id]).then(({rows})=>{
             if(!rows.length){
-                return Promise.reject({status: 400, msg: "bad request"})
+                return Promise.reject({status: 404, msg: "not found"})
             }
             //console.log(rows)
             return rows[0]
