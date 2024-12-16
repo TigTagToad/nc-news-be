@@ -2,8 +2,9 @@ const express = require("express");
 const apiRouter = require("./routes/api.router.js");
 const app = express();
 const {postgresErrorHandler, customErrorHandler, serverErrorHandler, catchInvalidEndpoints} = require("./error-handling/errors")
+const cors = require('cors');
 
-
+app.use(cors());
 
 app.use(express.json());
 
