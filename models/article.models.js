@@ -35,7 +35,7 @@ exports.checkArticleExists = (article_id)=>{
 
 exports.fetchArticles = (sort_by = "created_at", order = "desc", topic, limit = 10, p) =>{
     const offset = (p * limit) - limit;
-    const validSortBy = ["title", "topic", "author", "created_at", "votes", "article_img_url"];
+    const validSortBy = ["title", "topic", "author", "created_at", "votes", "article_img_url", "comment_count"];
     const validOrder = ["ASC", "DESC"]
     let sqlQuery = `
     SELECT 
